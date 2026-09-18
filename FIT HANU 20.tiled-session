@@ -1,0 +1,31 @@
+{
+    "activeFile": "",
+    "expandedProjectPaths": [
+        "public/maps",
+        "public/assets",
+        "public/tilesets",
+        "public"
+    ],
+    "fileStates": {
+        "public/maps/campus/campus.tmx": {
+            "scale": 0.0724375,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": -2402.07075064711,
+                "y": 724.7627264883522
+            }
+        }
+    },
+    "last.imagePath": "C:/fit-hanu-game/public/tilesets",
+    "map.height": 38,
+    "map.lastUsedFormat": "json",
+    "map.width": 50,
+    "openFiles": [
+    ],
+    "project": "FIT HANU 20.tiled-project",
+    "property.type": "file",
+    "recentFiles": [
+        "public/maps/campus/campus.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}
