@@ -1,9 +1,17 @@
 import Phaser from "phaser";
-import { Player } from "../entities/Player";
+import {
+    Player,
+    PlayerDirection
+} from "../entities/Player";
+import { AnimationController } from "./AnimationController";
 
 export class PlayerController {
     private player: Player;
-    private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+    private animationController: AnimationController;
+
+    private cursors:
+        Phaser.Types.Input.Keyboard.CursorKeys;
+
     private keys: {
         W: Phaser.Input.Keyboard.Key;
         A: Phaser.Input.Keyboard.Key;
@@ -19,29 +27,39 @@ export class PlayerController {
         speed: number = 160
     ) {
         this.player = player;
+        this.animationController = new AnimationController(player);
         this.speed = speed;
 
-        this.cursors = scene.input.keyboard!.createCursorKeys();
+        this.cursors =
+            scene.input.keyboard!.createCursorKeys();
 
-        this.keys = scene.input.keyboard!.addKeys(
-            "W,A,S,D"
-        ) as {
-            W: Phaser.Input.Keyboard.Key;
-            A: Phaser.Input.Keyboard.Key;
-            S: Phaser.Input.Keyboard.Key;
-            D: Phaser.Input.Keyboard.Key;
-        };
+        this.keys =
+            scene.input.keyboard!.addKeys(
+                "W,A,S,D"
+            ) as {
+                W: Phaser.Input.Keyboard.Key;
+                A: Phaser.Input.Keyboard.Key;
+                S: Phaser.Input.Keyboard.Key;
+                D: Phaser.Input.Keyboard.Key;
+            };
     }
 
     update(): void {
         let velocityX = 0;
         let velocityY = 0;
 
+        /*
+         * Horizontal movement
+         */
         if (
             this.cursors.left.isDown ||
             this.keys.A.isDown
         ) {
             velocityX = -this.speed;
+
+            this.player.setFacingDirection(
+                PlayerDirection.LEFT
+            );
         }
 
         if (
@@ -49,13 +67,24 @@ export class PlayerController {
             this.keys.D.isDown
         ) {
             velocityX = this.speed;
+
+            this.player.setFacingDirection(
+                PlayerDirection.RIGHT
+            );
         }
 
+        /*
+         * Vertical movement
+         */
         if (
             this.cursors.up.isDown ||
             this.keys.W.isDown
         ) {
             velocityY = -this.speed;
+
+            this.player.setFacingDirection(
+                PlayerDirection.UP
+            );
         }
 
         if (
@@ -63,15 +92,36 @@ export class PlayerController {
             this.keys.S.isDown
         ) {
             velocityY = this.speed;
+
+            this.player.setFacingDirection(
+                PlayerDirection.DOWN
+            );
         }
 
+        /*
+         * Apply movement
+         */
         this.player.setVelocity(
             velocityX,
             velocityY
         );
 
-        if (velocityX !== 0 || velocityY !== 0) {
-            this.player.body.velocity.normalize().scale(this.speed);
+        /*
+         * Prevent diagonal movement
+         * from being faster.
+         */
+        const isMoving =
+            velocityX !== 0 ||
+            velocityY !== 0;
+
+        if (isMoving) {
+            this.player.body.velocity
+                .normalize()
+                .scale(this.speed);
         }
+
+        this.animationController.update(
+            isMoving
+        );
     }
 }

@@ -1,7 +1,17 @@
 import Phaser from "phaser";
 
+export enum PlayerDirection {
+    UP = "up",
+    DOWN = "down",
+    LEFT = "left",
+    RIGHT = "right"
+}
+
 export class Player {
     public readonly sprite: Phaser.Physics.Arcade.Sprite;
+
+    private facingDirection: PlayerDirection =
+        PlayerDirection.DOWN;
 
     constructor(
         scene: Phaser.Scene,
@@ -34,13 +44,10 @@ export class Player {
             "player"
         );
 
-        // Cấu hình Player
         this.sprite.setDisplaySize(32, 32);
 
-        // Không cho Player đi ra ngoài Physics World
         this.sprite.setCollideWorldBounds(true);
 
-        // Player nằm trên background
         this.sprite.setDepth(10);
     }
 
@@ -53,5 +60,15 @@ export class Player {
 
     get body(): Phaser.Physics.Arcade.Body {
         return this.sprite.body as Phaser.Physics.Arcade.Body;
+    }
+
+    setFacingDirection(
+        direction: PlayerDirection
+    ): void {
+        this.facingDirection = direction;
+    }
+
+    getFacingDirection(): PlayerDirection {
+        return this.facingDirection;
     }
 }

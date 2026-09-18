@@ -16,6 +16,13 @@ export class CampusScene extends Phaser.Scene {
     create(): void {
         const { width, height } = this.scale;
 
+        this.physics.world.setBounds(
+            0,
+            0,
+            1280,
+            720
+        );
+
         this.add
             .text(width / 2, 80, "KHUÔN VIÊN HANU", {
                 fontFamily: "Arial",
@@ -41,6 +48,26 @@ export class CampusScene extends Phaser.Scene {
             this,
             400,
             300
+        );
+
+        this.cameras.main.startFollow(
+            this.player.sprite,
+            true
+        );
+
+        const obstacle =
+            this.physics.add.staticImage(
+                500,
+                300,
+                "player"
+            );
+
+        obstacle.setDisplaySize(64, 64);
+        obstacle.refreshBody();
+
+        this.physics.add.collider(
+            this.player.sprite,
+            obstacle
         );
 
         this.playerController = new PlayerController(
