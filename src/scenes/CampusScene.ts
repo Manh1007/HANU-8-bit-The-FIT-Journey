@@ -1,8 +1,14 @@
 import Phaser from "phaser";
 import { locationManager } from "../systems/LocationManager";
 import { MapManager } from "../systems/MapManager";
+import { Player } from "../entities/Player";
+import { PlayerController } from "../systems/PlayerController";
 
 export class CampusScene extends Phaser.Scene {
+    
+    private player!: Player;
+    private playerController!: PlayerController;
+
     constructor() {
         super("CampusScene");
     }
@@ -30,6 +36,17 @@ export class CampusScene extends Phaser.Scene {
                 }
             )
             .setOrigin(0.5);
+
+        this.player = new Player(
+            this,
+            400,
+            300
+        );
+
+        this.playerController = new PlayerController(
+            this,
+            this.player
+        );
 
         const mapManager = new MapManager(this);
 
@@ -65,5 +82,9 @@ export class CampusScene extends Phaser.Scene {
                 mapManager.goToMap("NhaCScene");
             });
         }
+    }
+
+    update(): void {
+    this.playerController.update();
     }
 }
