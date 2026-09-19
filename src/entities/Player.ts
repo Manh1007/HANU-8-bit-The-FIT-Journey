@@ -45,6 +45,8 @@ export class Player {
         );
 
         this.sprite.setDisplaySize(32, 32);
+        this.sprite.body.setSize(16, 12);
+        this.sprite.body.setOffset(8, 20);
 
         this.sprite.setCollideWorldBounds(true);
 

@@ -1,12 +1,28 @@
 {
-    "activeFile": "",
+    "activeFile": "public/maps/campus/campus.tmj",
     "expandedProjectPaths": [
-        "public/maps",
         "public/assets",
         "public/tilesets",
-        "public"
+        "public",
+        ".",
+        "public/maps/campus",
+        "public/maps"
     ],
     "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "public/maps/campus/campus.tmj": {
+            "scale": 0.5,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 572,
+                "y": 615
+            }
+        },
+        "public/maps/campus/campus.tmj#campusPlaceholder": {
+            "scaleInDock": 1
+        },
         "public/maps/campus/campus.tmx": {
             "scale": 0.0724375,
             "selectedLayer": 3,
@@ -14,17 +30,27 @@
                 "x": -2402.07075064711,
                 "y": 724.7627264883522
             }
+        },
+        "public/tilesets/campusPlaceholder.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         }
     },
+    "last.exportedFilePath": "C:/fit-hanu-game/public/maps/campus",
     "last.imagePath": "C:/fit-hanu-game/public/tilesets",
     "map.height": 38,
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "map.lastUsedFormat": "json",
     "map.width": 50,
     "openFiles": [
+        "public/maps/campus/campus.tmj",
+        "public/tilesets/campusPlaceholder.tsx"
     ],
     "project": "FIT HANU 20.tiled-project",
     "property.type": "file",
     "recentFiles": [
+        "public/tilesets/campusPlaceholder.tsx",
+        "public/maps/campus/campus.tmj",
         "public/maps/campus/campus.tmx"
     ],
     "tileset.lastUsedFormat": "tsx"

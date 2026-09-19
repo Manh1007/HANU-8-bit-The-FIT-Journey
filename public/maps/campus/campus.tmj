@@ -194,7 +194,7 @@
                  "visible":true,
                  "width":0,
                  "x":797.746478873239,
-                 "y":292.957746478873
+                 "y":334.957746478873
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -210,8 +210,17 @@
  "tileheight":32,
  "tilesets":[
         {
+         "columns":4,
          "firstgid":1,
-         "source":"..\/..\/tilesets\/campusPlaceholder.tsx"
+         "image":"..\/..\/tilesets\/campus-placeholder.png",
+         "imageheight":128,
+         "imagewidth":128,
+         "margin":0,
+         "name":"campusPlaceholder",
+         "spacing":0,
+         "tilecount":16,
+         "tileheight":32,
+         "tilewidth":32
         }],
  "tilewidth":32,
  "type":"map",

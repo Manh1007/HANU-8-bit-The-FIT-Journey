@@ -7,6 +7,15 @@ export class PreloadScene extends Phaser.Scene {
 
     preload(): void {
         console.log("PreloadScene started");
+        this.load.tilemapTiledJSON(
+            "campusMap",
+            "/maps/campus/campus.tmj"
+        );
+
+        this.load.image(
+            "campusPlaceholder",
+            "/tilesets/campus-placeholder.png"
+        );
     }
 
     create(): void {
