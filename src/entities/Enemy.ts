@@ -81,4 +81,20 @@ export class Enemy {
     isAlive(): boolean {
         return this.alive;
     }
+
+    isDead(): boolean {
+        return !this.alive;
+    }
+
+    getHpPercentage(): number {
+        if (this.maxHp === 0) {
+            return 0;
+        }
+
+        return this.hp / this.maxHp;
+    }
+
+    isFullHealth(): boolean {
+        return this.hp === this.maxHp;
+    }
 }

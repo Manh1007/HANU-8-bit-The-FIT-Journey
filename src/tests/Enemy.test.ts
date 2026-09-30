@@ -125,6 +125,55 @@ describe("Enemy", () => {
         expect(enemy.getHp()).toBe(0);
         expect(enemy.isAlive()).toBe(false);
     });
+
+    test("should report alive state correctly", () => {
+        const enemy = new Enemy(enemyData);
+
+        expect(enemy.isAlive()).toBe(true);
+        expect(enemy.isDead()).toBe(false);
+    });
+
+    test("should report dead state correctly", () => {
+        const enemy = new Enemy(enemyData);
+
+        enemy.takeDamage(100);
+
+        expect(enemy.isAlive()).toBe(false);
+        expect(enemy.isDead()).toBe(true);
+    });
+
+    test("should calculate HP percentage correctly", () => {
+        const enemy = new Enemy(enemyData);
+
+        expect(enemy.getHpPercentage()).toBe(1);
+
+        enemy.takeDamage(25);
+
+        expect(enemy.getHpPercentage()).toBe(0.75);
+
+        enemy.takeDamage(50);
+
+        expect(enemy.getHpPercentage()).toBe(0.25);
+    });
+
+    test("should report full health correctly", () => {
+        const enemy = new Enemy(enemyData);
+
+        expect(enemy.isFullHealth()).toBe(true);
+
+        enemy.takeDamage(20);
+
+        expect(enemy.isFullHealth()).toBe(false);
+    });
+
+    test("should return zero HP percentage when max HP is zero", () => {
+        const enemy = new Enemy({
+            ...enemyData,
+            maxHp: 0,
+        });
+
+        expect(enemy.getHpPercentage()).toBe(0);
+    });
 });
 
 describe("Enemy + DamageSystem", () => {
