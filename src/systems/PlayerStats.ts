@@ -57,6 +57,27 @@ export class PlayerStats {
         return this.maxStamina;
     }
 
+    consumeStamina(amount: number): boolean {
+        if (amount <= 0 || this.stamina < amount) {
+            return false;
+        }
+
+        this.stamina -= amount;
+
+        return true;
+    }
+
+    restoreStamina(amount: number): void {
+        if (amount <= 0) {
+            return;
+        }
+
+        this.stamina = Math.min(
+            this.stamina + amount,
+            this.maxStamina
+        );
+    }
+
     // =========================
     // Armor
     // =========================
