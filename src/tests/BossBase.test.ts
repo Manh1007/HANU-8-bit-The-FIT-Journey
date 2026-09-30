@@ -10,8 +10,18 @@ import {
 } from "../bosses/BossBase";
 
 class TestBoss extends BossBase {
+    private phaseReady = false;
+
     constructor(data: BossData) {
         super(data);
+    }
+
+    setPhaseReady(value: boolean): void {
+        this.phaseReady = value;
+    }
+
+    protected shouldAdvancePhase(): boolean {
+        return this.phaseReady;
     }
 
     defeat(): void {
@@ -109,5 +119,57 @@ describe("BossBase", () => {
         boss.defeat();
 
         expect(boss.getState()).toBe("defeated");
+    });
+
+    test("should report that phase can advance", () => {
+        const boss = new TestBoss(bossData);
+
+        boss.startBattle();
+        boss.setPhaseReady(true);
+
+        expect(boss.canAdvancePhase()).toBe(true);
+    });
+
+    test("should not advance phase when condition is not met", () => {
+        const boss = new TestBoss(bossData);
+
+        boss.startBattle();
+
+        expect(boss.updatePhase()).toBe(false);
+        expect(boss.getCurrentPhase()).toBe(1);
+    });
+
+    test("should advance phase when condition is met", () => {
+        const boss = new TestBoss(bossData);
+
+        boss.startBattle();
+        boss.setPhaseReady(true);
+
+        expect(boss.updatePhase()).toBe(true);
+        expect(boss.getCurrentPhase()).toBe(2);
+    });
+
+    test("should not advance phase before battle starts", () => {
+        const boss = new TestBoss(bossData);
+
+        boss.setPhaseReady(true);
+
+        expect(boss.canAdvancePhase()).toBe(false);
+        expect(boss.updatePhase()).toBe(false);
+        expect(boss.getCurrentPhase()).toBe(1);
+    });
+
+    test("should not advance phase when boss is dead", () => {
+        const boss = new TestBoss(bossData);
+
+        boss.startBattle();
+        boss.takeDamage(300);
+
+        boss.setPhaseReady(true);
+
+        expect(boss.isDead()).toBe(true);
+        expect(boss.canAdvancePhase()).toBe(false);
+        expect(boss.updatePhase()).toBe(false);
+        expect(boss.getCurrentPhase()).toBe(1);
     });
 });

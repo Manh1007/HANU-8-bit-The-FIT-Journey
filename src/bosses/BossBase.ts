@@ -44,12 +44,32 @@ export abstract class BossBase extends Enemy {
         this.state = "active";
     }
 
-    advancePhase(): boolean {
-        if (this.state !== "active") {
+    canAdvancePhase(): boolean {
+        return (
+            this.state === "active" &&
+            this.currentPhase < this.maxPhases &&
+            this.isAlive()
+        );
+    }
+
+    protected shouldAdvancePhase(): boolean {
+        return false;
+    }
+
+    updatePhase(): boolean {
+        if (!this.canAdvancePhase()) {
             return false;
         }
 
-        if (this.currentPhase >= this.maxPhases) {
+        if (!this.shouldAdvancePhase()) {
+            return false;
+        }
+
+        return this.advancePhase();
+    }
+
+    advancePhase(): boolean {
+        if (!this.canAdvancePhase()) {
             return false;
         }
 
