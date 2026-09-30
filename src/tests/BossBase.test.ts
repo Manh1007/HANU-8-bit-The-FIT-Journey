@@ -172,4 +172,72 @@ describe("BossBase", () => {
         expect(boss.updatePhase()).toBe(false);
         expect(boss.getCurrentPhase()).toBe(1);
     });
+
+    test("should become defeated when HP reaches zero", () => {
+        const boss = new TestBoss(bossData);
+
+        boss.startBattle();
+
+        expect(boss.getState()).toBe("active");
+
+        const actualDamage = boss.takeDamage(300);
+
+        expect(actualDamage).toBe(300);
+        expect(boss.getHp()).toBe(0);
+        expect(boss.isDead()).toBe(true);
+        expect(boss.getState()).toBe("defeated");
+    });
+
+    test("should not restart battle after being defeated", () => {
+        const boss = new TestBoss(bossData);
+
+        boss.startBattle();
+        boss.takeDamage(300);
+
+        expect(boss.getState()).toBe("defeated");
+
+        boss.startBattle();
+
+        expect(boss.getState()).toBe("defeated");
+    });
+
+    test("should not advance phase after being defeated", () => {
+        const boss = new TestBoss(bossData);
+
+        boss.startBattle();
+        boss.takeDamage(300);
+
+        boss.setPhaseReady(true);
+
+        expect(boss.getState()).toBe("defeated");
+        expect(boss.canAdvancePhase()).toBe(false);
+        expect(boss.updatePhase()).toBe(false);
+        expect(boss.getCurrentPhase()).toBe(1);
+    });
+
+    test("should handle overkill damage correctly", () => {
+        const boss = new TestBoss(bossData);
+
+        boss.startBattle();
+
+        const actualDamage = boss.takeDamage(500);
+
+        expect(actualDamage).toBe(300);
+        expect(boss.getHp()).toBe(0);
+        expect(boss.isDead()).toBe(true);
+        expect(boss.getState()).toBe("defeated");
+    });
+
+    test("should not take damage after being defeated", () => {
+        const boss = new TestBoss(bossData);
+
+        boss.startBattle();
+        boss.takeDamage(300);
+
+        const actualDamage = boss.takeDamage(100);
+
+        expect(actualDamage).toBe(0);
+        expect(boss.getHp()).toBe(0);
+        expect(boss.getState()).toBe("defeated");
+    });
 });

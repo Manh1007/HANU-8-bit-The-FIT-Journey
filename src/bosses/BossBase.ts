@@ -24,6 +24,16 @@ export abstract class BossBase extends Enemy {
         this.maxPhases = data.maxPhases;
     }
 
+    takeDamage(amount: number): number {
+        const actualDamage = super.takeDamage(amount);
+
+        if (this.isDead()) {
+            this.markDefeated();
+        }
+
+        return actualDamage;
+    }
+
     getCurrentPhase(): BossPhase {
         return this.currentPhase;
     }
