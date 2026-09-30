@@ -57,6 +57,23 @@ export class Enemy {
         return this.armor;
     }
 
+    takeDamage(amount: number): number {
+        const safeAmount = Math.max(0, amount);
+
+        const previousHp = this.hp;
+
+        this.hp = Math.max(
+            0,
+            this.hp - safeAmount
+        );
+
+        if (this.hp === 0) {
+            this.alive = false;
+        }
+
+        return previousHp - this.hp;
+    }
+
     isAlive(): boolean {
         return this.alive;
     }
