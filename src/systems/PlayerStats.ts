@@ -37,6 +37,19 @@ export class PlayerStats {
         return this.maxHp;
     }
 
+    takeDamage(amount: number): number {
+        const safeAmount = Math.max(0, amount);
+
+        const previousHp = this.hp;
+
+        this.hp = Math.max(
+            0,
+            this.hp - safeAmount
+        );
+
+        return previousHp - this.hp;
+    }
+
     // =========================
     // Attack
     // =========================
