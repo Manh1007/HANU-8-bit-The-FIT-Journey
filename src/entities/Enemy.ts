@@ -58,6 +58,10 @@ export class Enemy {
     }
 
     takeDamage(amount: number): number {
+        if (!this.alive) {
+            return 0;
+        }
+
         const safeAmount = Math.max(0, amount);
 
         const previousHp = this.hp;

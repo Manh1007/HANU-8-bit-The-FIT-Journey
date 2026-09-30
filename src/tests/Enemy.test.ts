@@ -110,6 +110,21 @@ describe("Enemy", () => {
         expect(enemy.getHp()).toBe(0);
         expect(enemy.isAlive()).toBe(false);
     });
+
+    test("should not take damage after death", () => {
+        const enemy = new Enemy(enemyData);
+
+        enemy.takeDamage(100);
+
+        expect(enemy.getHp()).toBe(0);
+        expect(enemy.isAlive()).toBe(false);
+
+        const actualDamage = enemy.takeDamage(50);
+
+        expect(actualDamage).toBe(0);
+        expect(enemy.getHp()).toBe(0);
+        expect(enemy.isAlive()).toBe(false);
+    });
 });
 
 describe("Enemy + DamageSystem", () => {
