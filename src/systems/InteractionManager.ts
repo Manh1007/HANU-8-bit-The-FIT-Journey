@@ -2,11 +2,18 @@ import Phaser from "phaser";
 import { Player } from "../entities/Player";
 import { MapManager } from "./MapManager";
 
+type TiledObject = Phaser.Tilemaps.ObjectLayer["objects"][number];
+type TiledProperty = {
+    name: string;
+    type: string;
+    value: string | number | boolean;
+};
+
 export class InteractionManager {
     private scene: Phaser.Scene;
     private player: Player;
     private objectsLayer: Phaser.Tilemaps.ObjectLayer;
-    private entranceObject?: Phaser.Tilemaps.TiledObject;
+    private entranceObject?: TiledObject;
     private interactionDistance = 50;
     private interactionText?: Phaser.GameObjects.Text;
     private mapManager: MapManager;
@@ -96,7 +103,7 @@ export class InteractionManager {
         }
 
         const targetScene = this.entranceObject.properties?.find(
-            (property) => property.name === "targetScene"
+            (property : TiledProperty) => property.name === "targetScene"
         );
 
         if (!targetScene) {

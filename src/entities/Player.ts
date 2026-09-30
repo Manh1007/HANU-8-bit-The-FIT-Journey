@@ -1,17 +1,15 @@
 import Phaser from "phaser";
 
-export enum PlayerDirection {
-    UP = "up",
-    DOWN = "down",
-    LEFT = "left",
-    RIGHT = "right"
-}
+export type PlayerDirection =
+    | "up"
+    | "down"
+    | "left"
+    | "right";
 
 export class Player {
     public readonly sprite: Phaser.Physics.Arcade.Sprite;
 
-    private facingDirection: PlayerDirection =
-        PlayerDirection.DOWN;
+    private facingDirection: PlayerDirection = "down";
 
     constructor(
         scene: Phaser.Scene,
@@ -45,8 +43,9 @@ export class Player {
         );
 
         this.sprite.setDisplaySize(32, 32);
-        this.sprite.body.setSize(16, 12);
-        this.sprite.body.setOffset(8, 20);
+
+        this.body.setSize(16, 12);
+        this.body.setOffset(8, 20);
 
         this.sprite.setCollideWorldBounds(true);
 

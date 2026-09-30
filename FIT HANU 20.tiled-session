@@ -1,23 +1,23 @@
 {
     "activeFile": "public/maps/campus/campus.tmj",
     "expandedProjectPaths": [
-        "public/assets",
-        "public/tilesets",
         "public",
-        ".",
+        "public/tilesets",
         "public/maps/campus",
-        "public/maps"
+        "public/assets",
+        "public/maps",
+        "."
     ],
     "fileStates": {
         "": {
             "scaleInDock": 1
         },
         "public/maps/campus/campus.tmj": {
-            "scale": 0.5,
+            "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 572,
-                "y": 615
+                "x": 981.5,
+                "y": 974.5
             }
         },
         "public/maps/campus/campus.tmj#campusPlaceholder": {

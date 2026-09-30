@@ -1,8 +1,5 @@
 import Phaser from "phaser";
-import {
-    Player,
-    PlayerDirection
-} from "../entities/Player";
+import { Player } from "../entities/Player";
 import { AnimationController } from "./AnimationController";
 
 export class PlayerController {
@@ -58,7 +55,7 @@ export class PlayerController {
             velocityX = -this.speed;
 
             this.player.setFacingDirection(
-                PlayerDirection.LEFT
+                "left"
             );
         }
 
@@ -69,7 +66,7 @@ export class PlayerController {
             velocityX = this.speed;
 
             this.player.setFacingDirection(
-                PlayerDirection.RIGHT
+                "right"
             );
         }
 
@@ -83,7 +80,7 @@ export class PlayerController {
             velocityY = -this.speed;
 
             this.player.setFacingDirection(
-                PlayerDirection.UP
+                "up"
             );
         }
 
@@ -94,7 +91,7 @@ export class PlayerController {
             velocityY = this.speed;
 
             this.player.setFacingDirection(
-                PlayerDirection.DOWN
+                "down"
             );
         }
 

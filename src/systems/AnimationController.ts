@@ -1,15 +1,14 @@
-import { Player, PlayerDirection } from "../entities/Player";
+import { Player } from "../entities/Player";
+import type { PlayerDirection } from "../entities/Player";
 
-export enum PlayerAnimationState {
-    IDLE = "idle",
-    WALKING = "walking"
-}
+export type PlayerAnimationState =
+    | "idle"
+    | "walking";
 
 export class AnimationController {
     private player: Player;
 
-    private currentState: PlayerAnimationState =
-        PlayerAnimationState.IDLE;
+    private currentState: PlayerAnimationState = "idle";
 
     constructor(player: Player) {
         this.player = player;
@@ -17,11 +16,9 @@ export class AnimationController {
 
     update(isMoving: boolean): void {
         if (isMoving) {
-            this.currentState =
-                PlayerAnimationState.WALKING;
+            this.currentState = "walking";
         } else {
-            this.currentState =
-                PlayerAnimationState.IDLE;
+            this.currentState = "idle";
         }
 
         this.updateAnimation();

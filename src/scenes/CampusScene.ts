@@ -1,6 +1,4 @@
 import Phaser from "phaser";
-import { locationManager } from "../systems/LocationManager";
-import { MapManager } from "../systems/MapManager";
 import { Player } from "../entities/Player";
 import { PlayerController } from "../systems/PlayerController";
 import { InteractionManager } from "../systems/InteractionManager";
@@ -84,8 +82,8 @@ export class CampusScene extends Phaser.Scene {
             }
 
             const obstacle = this.add.rectangle(
-                object.x + object.width / 2,
-                object.y + object.height / 2,
+                (object.x ?? 0) + object.width / 2,
+                (object.y ?? 0) + object.height / 2,
                 object.width,
                 object.height,
                 0x000000,
@@ -165,11 +163,6 @@ export class CampusScene extends Phaser.Scene {
                 }
             )
             .setOrigin(0.5);
-
-        // =========================
-        // MAP MANAGER
-        // =========================
-        const mapManager = new MapManager(this);
     }
 
     update(): void {
