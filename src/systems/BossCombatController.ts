@@ -8,6 +8,7 @@ import {
 import { BossSkillExecutor } from "./BossSkillExecutor";
 import { DamageSystem } from "./DamageSystem";
 import type { BossCombatResult } from "./BossCombatResult";
+import type { BossPhaseResult } from "./BossPhaseResult";
 
 export class BossCombatController {
     private readonly boss: BossBase;
@@ -58,12 +59,29 @@ export class BossCombatController {
         return this.boss.getState() === "active";
     }
 
-    updateBossPhase(): boolean {
+    updateBossPhase(): BossPhaseResult {
+        const previousPhase =
+            this.boss.getCurrentPhase();
+
         if (!this.isCombatActive()) {
-            return false;
+            return {
+                changed: false,
+                previousPhase,
+                currentPhase: previousPhase,
+            };
         }
 
-        return this.boss.updatePhase();
+        const changed =
+            this.boss.updatePhase();
+
+        const currentPhase =
+            this.boss.getCurrentPhase();
+
+        return {
+            changed,
+            previousPhase,
+            currentPhase,
+        };
     }
 
     executeNormalAttack(

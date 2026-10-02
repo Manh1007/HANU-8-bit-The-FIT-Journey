@@ -232,7 +232,7 @@ describe("BossCombatController", () => {
             createController();
 
         expect(
-            controller.updateBossPhase()
+            controller.updateBossPhase().changed
         ).toBe(false);
 
         expect(
@@ -254,7 +254,7 @@ describe("BossCombatController", () => {
         ).toBeCloseTo(2 / 3);
 
         expect(
-            controller.updateBossPhase()
+            controller.updateBossPhase().changed
         ).toBe(false);
 
         expect(
@@ -276,7 +276,7 @@ describe("BossCombatController", () => {
         ).toBe(0.5);
 
         expect(
-            controller.updateBossPhase()
+            controller.updateBossPhase().changed
         ).toBe(true);
 
         expect(
@@ -294,11 +294,11 @@ describe("BossCombatController", () => {
         boss.takeDamage(150);
 
         expect(
-            controller.updateBossPhase()
+            controller.updateBossPhase().changed
         ).toBe(true);
 
         expect(
-            controller.updateBossPhase()
+            controller.updateBossPhase().changed
         ).toBe(false);
 
         expect(
@@ -320,7 +320,7 @@ describe("BossCombatController", () => {
         ).toBe("defeated");
 
         expect(
-            controller.updateBossPhase()
+            controller.updateBossPhase().changed
         ).toBe(false);
 
         expect(
