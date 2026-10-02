@@ -41,4 +41,13 @@ export class BossCombatSystem {
             multiplier
         );
     }
+
+    rollCritical(
+        randomValue: number
+    ): boolean {
+        return (
+            randomValue >= 0 &&
+            randomValue < this.combatData.criticalChance
+        );
+    }
 }

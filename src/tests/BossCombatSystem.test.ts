@@ -59,4 +59,65 @@ describe("BossCombatSystem", () => {
             combatSystem.calculateSkillDamage("skill2")
         ).toBe(35);
     });
+
+    test("should trigger critical below critical chance", () => {
+        const boss = new Boss1();
+
+        const combatSystem =
+            new BossCombatSystem(
+                boss,
+                boss.getCombatData()
+            );
+
+        expect(
+            combatSystem.rollCritical(0.39)
+        ).toBe(true);
+    });
+
+    test("should not trigger critical at critical chance boundary", () => {
+        const boss = new Boss1();
+
+        const combatSystem =
+            new BossCombatSystem(
+                boss,
+                boss.getCombatData()
+            );
+
+        expect(
+            combatSystem.rollCritical(0.4)
+        ).toBe(false);
+    });
+
+    test("should not trigger critical above critical chance", () => {
+        const boss = new Boss1();
+
+        const combatSystem =
+            new BossCombatSystem(
+                boss,
+                boss.getCombatData()
+            );
+
+        expect(
+            combatSystem.rollCritical(0.8)
+        ).toBe(false);
+    });
+
+    test("should use critical damage multiplier correctly", () => {
+        const boss = new Boss1();
+
+        const combatSystem =
+            new BossCombatSystem(
+                boss,
+                boss.getCombatData()
+            );
+
+        const isCritical =
+            combatSystem.rollCritical(0.2);
+
+        expect(isCritical).toBe(true);
+
+        expect(
+            combatSystem.calculateCriticalDamage()
+        ).toBe(17);
+    });
 });
