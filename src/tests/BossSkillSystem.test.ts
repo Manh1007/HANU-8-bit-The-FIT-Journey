@@ -177,4 +177,108 @@ describe("BossSkillSystem", () => {
             )
         ).toBe(true);
     });
+
+    test("unused skill has zero remaining cooldown", () => {
+        const system =
+            new BossSkillSystem();
+
+        expect(
+            system.getRemainingCooldown(
+                "skill1",
+                1000
+            )
+        ).toBe(0);
+    });
+
+    test("returns full cooldown immediately after skill use", () => {
+        const system =
+            new BossSkillSystem();
+
+        system.useSkill(
+            "skill1",
+            1000
+        );
+
+        expect(
+            system.getRemainingCooldown(
+                "skill1",
+                1000
+            )
+        ).toBe(3000);
+    });
+
+    test("remaining cooldown decreases over time", () => {
+        const system =
+            new BossSkillSystem();
+
+        system.useSkill(
+            "skill1",
+            1000
+        );
+
+        expect(
+            system.getRemainingCooldown(
+                "skill1",
+                1500
+            )
+        ).toBe(2500);
+
+        expect(
+            system.getRemainingCooldown(
+                "skill1",
+                2500
+            )
+        ).toBe(1500);
+    });
+
+    test("remaining cooldown becomes zero after cooldown expires", () => {
+        const system =
+            new BossSkillSystem();
+
+        system.useSkill(
+            "skill1",
+            1000
+        );
+
+        expect(
+            system.getRemainingCooldown(
+                "skill1",
+                4000
+            )
+        ).toBe(0);
+    });
+
+    test("remaining cooldown never becomes negative", () => {
+        const system =
+            new BossSkillSystem();
+
+        system.useSkill(
+            "skill1",
+            1000
+        );
+
+        expect(
+            system.getRemainingCooldown(
+                "skill1",
+                10000
+            )
+        ).toBe(0);
+    });
+
+    test("skill 2 returns its own cooldown", () => {
+        const system =
+            new BossSkillSystem();
+
+        system.useSkill(
+            "skill2",
+            1000
+        );
+
+        expect(
+            system.getRemainingCooldown(
+                "skill2",
+                2000
+            )
+        ).toBe(4000);
+    });
 });

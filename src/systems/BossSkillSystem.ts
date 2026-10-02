@@ -109,6 +109,33 @@ export class BossSkillSystem {
         );
     }
 
+    getRemainingCooldown(
+        skillId: BossSkillId,
+        currentTime: number
+    ): number {
+        const skill =
+            this.getSkill(skillId);
+
+        if (!skill) {
+            return 0;
+        }
+
+        const lastUsed =
+            this.lastUsedAt.get(skillId);
+
+        if (lastUsed === undefined) {
+            return 0;
+        }
+
+        const elapsed =
+            currentTime - lastUsed;
+
+        return Math.max(
+            0,
+            skill.cooldown - elapsed
+        );
+    }
+
     useSkill(
         skillId: BossSkillId,
         currentTime: number
