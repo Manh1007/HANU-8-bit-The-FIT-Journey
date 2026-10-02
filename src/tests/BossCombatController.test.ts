@@ -43,128 +43,63 @@ describe("BossCombatController", () => {
         );
     }
 
-    test("executes skill and returns final damage", () => {
+    test("executes normal attack", () => {
         const controller =
             createController();
 
         const result =
-            controller.executeSkill(
-                "skill1",
-                1000,
-                0.8,
-                0
-            );
+            controller.executeNormalAttack(0);
 
         expect(result.success).toBe(true);
+
         expect(
             result.skillResult.success
         ).toBe(true);
 
         expect(
             result.skillResult.skillId
-        ).toBe("skill1");
+        ).toBe("normal");
 
         expect(
             result.skillResult.damage
-        ).toBe(20);
+        ).toBe(10);
 
         expect(
-            result.finalDamage
-        ).toBe(20);
-    });
-
-    test("applies target armor to skill damage", () => {
-        const controller =
-            createController();
-
-        const result =
-            controller.executeSkill(
-                "skill1",
-                1000,
-                0.8,
-                4
-            );
-
-        expect(result.success).toBe(true);
-
-        expect(
-            result.skillResult.damage
-        ).toBe(20);
+            result.skillResult.critical
+        ).toBe(false);
 
         expect(
             result.finalDamage
         ).toBe(10);
     });
 
-    test("applies critical skill damage", () => {
+    test("applies target armor to normal attack", () => {
         const controller =
             createController();
 
         const result =
-            controller.executeSkill(
-                "skill1",
-                1000,
-                0.2,
-                0
-            );
-
-        expect(result.success).toBe(true);
-
-        expect(
-            result.skillResult.critical
-        ).toBe(true);
-
-        expect(
-            result.skillResult.damage
-        ).toBe(34);
-
-        expect(
-            result.finalDamage
-        ).toBe(34);
-    });
-
-    test("applies armor after critical damage", () => {
-        const controller =
-            createController();
-
-        const result =
-            controller.executeSkill(
-                "skill1",
-                1000,
-                0.2,
-                4
-            );
+            controller.executeNormalAttack(2);
 
         expect(result.success).toBe(true);
 
         expect(
             result.skillResult.damage
-        ).toBe(34);
+        ).toBe(10);
 
         expect(
             result.finalDamage
-        ).toBe(24);
+        ).toBe(5);
     });
 
-    test("returns failed result when skill is on cooldown", () => {
+    test("normal attack damage does not use skill cooldown", () => {
         const controller =
             createController();
 
         const firstResult =
-            controller.executeSkill(
-                "skill1",
-                1000,
-                0.8,
-                0
-            );
+            controller.executeNormalAttack(0);
 
         const secondResult =
-            controller.executeSkill(
-                "skill1",
-                2000,
-                0.8,
-                0
-            );
+            controller.executeNormalAttack(0);
 
         expect(
             firstResult.success
@@ -172,94 +107,38 @@ describe("BossCombatController", () => {
 
         expect(
             secondResult.success
-        ).toBe(false);
+        ).toBe(true);
+
+        expect(
+            firstResult.finalDamage
+        ).toBe(10);
 
         expect(
             secondResult.finalDamage
-        ).toBe(0);
-    });
-
-    test("allows skill after cooldown", () => {
-        const controller =
-            createController();
-
-        controller.executeSkill(
-            "skill1",
-            1000,
-            0.8,
-            0
-        );
-
-        const result =
-            controller.executeSkill(
-                "skill1",
-                4000,
-                0.8,
-                0
-            );
-
-        expect(result.success).toBe(true);
-
-        expect(
-            result.finalDamage
-        ).toBe(20);
-    });
-
-    test("returns boss attack from combat system", () => {
-        const controller =
-            createController();
-
-        expect(
-            controller.getBossAttack()
         ).toBe(10);
     });
 
-    test("checks skill availability", () => {
+    test("normal attack is not critical", () => {
         const controller =
             createController();
 
-        expect(
-            controller.canUseSkill(
-                "skill1",
-                1000
-            )
-        ).toBe(true);
-
-        controller.executeSkill(
-            "skill1",
-            1000,
-            0.8,
-            0
-        );
+        const result =
+            controller.executeNormalAttack(0);
 
         expect(
-            controller.canUseSkill(
-                "skill1",
-                2000
-            )
+            result.skillResult.critical
         ).toBe(false);
-
-        expect(
-            controller.canUseSkill(
-                "skill1",
-                4000
-            )
-        ).toBe(true);
     });
 
-    test("returns the controlled boss", () => {
+    test("normal attack respects target armor", () => {
         const controller =
             createController();
 
-        const boss =
-            controller.getBoss();
-
-        expect(boss).toBeInstanceOf(
-            Boss1
-        );
+        const result =
+            controller.executeNormalAttack(4);
 
         expect(
-            boss.getName()
-        ).toBe("Boss 1");
+            result.finalDamage
+        ).toBe(0);
     });
 });

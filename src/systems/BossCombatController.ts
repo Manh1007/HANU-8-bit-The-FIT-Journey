@@ -44,6 +44,32 @@ export class BossCombatController {
             );
     }
 
+    executeNormalAttack(
+        targetArmor: number
+    ): BossCombatResult {
+        const damage =
+            this.combatSystem
+                .calculateNormalDamage();
+
+        const damageResult =
+            this.damageSystem.calculateDamage(
+                damage,
+                targetArmor
+            );
+
+        return {
+            success: true,
+            skillResult: {
+                success: true,
+                skillId: "normal",
+                damage,
+                critical: false,
+            },
+            finalDamage:
+                damageResult.finalDamage,
+        };
+    }
+
     executeSkill(
         skillId: BossSkillId,
         currentTime: number,
