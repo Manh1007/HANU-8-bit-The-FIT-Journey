@@ -3,6 +3,7 @@ import {
     BossSkillSystem,
     type BossSkillId,
 } from "./BossSkillSystem";
+import type { BossSkillResult } from "./BossSkillResult";
 
 export class BossSkillExecutor {
     private readonly boss: BossBase;
@@ -19,12 +20,16 @@ export class BossSkillExecutor {
     executeSkill(
         skillId: BossSkillId,
         currentTime: number
-    ): number {
+    ): BossSkillResult {
         const skill =
             this.skillSystem.getSkill(skillId);
 
         if (!skill) {
-            return 0;
+            return {
+                success: false,
+                skillId,
+                damage: 0,
+            };
         }
 
         if (
@@ -33,12 +38,21 @@ export class BossSkillExecutor {
                 currentTime
             )
         ) {
-            return 0;
+            return {
+                success: false,
+                skillId,
+                damage: 0,
+            };
         }
 
-        return (
+        const damage =
             this.boss.getAttack() *
-            skill.damageMultiplier
-        );
+            skill.damageMultiplier;
+
+        return {
+            success: true,
+            skillId,
+            damage,
+        };
     }
 }
