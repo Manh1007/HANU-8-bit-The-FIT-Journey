@@ -202,4 +202,34 @@ describe("Enemy + DamageSystem", () => {
         expect(enemy.getHp()).toBe(82.5);
         expect(enemy.isAlive()).toBe(true);
     });
+
+    test("should update armor", () => {
+        const enemy = new Enemy({
+            id: "test-enemy",
+            name: "Test Enemy",
+            maxHp: 100,
+            attack: 10,
+            armor: 5,
+        });
+
+        expect(enemy.getArmor()).toBe(5);
+
+        enemy.setArmor(20);
+
+        expect(enemy.getArmor()).toBe(20);
+    });
+
+    test("should not allow negative armor", () => {
+        const enemy = new Enemy({
+            id: "test-enemy",
+            name: "Test Enemy",
+            maxHp: 100,
+            attack: 10,
+            armor: 5,
+        });
+
+        enemy.setArmor(-10);
+
+        expect(enemy.getArmor()).toBe(0);
+    });
 });

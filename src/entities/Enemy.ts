@@ -14,7 +14,7 @@ export class Enemy {
     private hp: number;
 
     private readonly attack: number;
-    private readonly armor: number;
+    private armor: number;
 
     private alive = true;
 
@@ -55,6 +55,10 @@ export class Enemy {
 
     getArmor(): number {
         return this.armor;
+    }
+
+    setArmor(amount: number): void {
+        this.armor = Math.max(0, amount);
     }
 
     takeDamage(amount: number): number {
