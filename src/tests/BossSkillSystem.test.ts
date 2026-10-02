@@ -325,4 +325,123 @@ describe("BossSkillSystem", () => {
             )
         ).toBe("ready");
     });
+
+    test("resets a single skill cooldown", () => {
+        const system =
+            new BossSkillSystem();
+
+        system.useSkill(
+            "skill1",
+            1000
+        );
+
+        expect(
+            system.getSkillState(
+                "skill1",
+                2000
+            )
+        ).toBe("cooldown");
+
+        expect(
+            system.resetSkillCooldown(
+                "skill1"
+            )
+        ).toBe(true);
+
+        expect(
+            system.getSkillState(
+                "skill1",
+                2000
+            )
+        ).toBe("ready");
+    });
+
+    test("returns false when resetting an unknown skill", () => {
+        const system =
+            new BossSkillSystem();
+
+        expect(
+            system.resetSkillCooldown(
+                "unknown" as "skill1"
+            )
+        ).toBe(false);
+    });
+
+    test("resets all skill cooldowns", () => {
+        const system =
+            new BossSkillSystem();
+
+        system.useSkill(
+            "skill1",
+            1000
+        );
+
+        system.useSkill(
+            "skill2",
+            1000
+        );
+
+        expect(
+            system.getSkillState(
+                "skill1",
+                2000
+            )
+        ).toBe("cooldown");
+
+        expect(
+            system.getSkillState(
+                "skill2",
+                2000
+            )
+        ).toBe("cooldown");
+
+        system.resetAllCooldowns();
+
+        expect(
+            system.getSkillState(
+                "skill1",
+                2000
+            )
+        ).toBe("ready");
+
+        expect(
+            system.getSkillState(
+                "skill2",
+                2000
+            )
+        ).toBe("ready");
+    });
+    
+    test("skill can be used immediately after reset", () => {
+        const system =
+            new BossSkillSystem();
+
+        expect(
+            system.useSkill(
+                "skill1",
+                1000
+            )
+        ).toBe(true);
+
+        expect(
+            system.useSkill(
+                "skill1",
+                2000
+            )
+        ).toBe(false);
+
+        expect(
+            system.resetSkillCooldown(
+                "skill1"
+            )
+        ).toBe(true);
+
+        expect(
+            system.useSkill(
+                "skill1",
+                2000
+            )
+        ).toBe(true);
+    });
+    
 });

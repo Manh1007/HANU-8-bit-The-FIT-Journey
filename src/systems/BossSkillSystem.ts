@@ -182,4 +182,20 @@ export class BossSkillSystem {
 
         return true;
     }
+
+    resetSkillCooldown(
+        skillId: BossSkillId
+    ): boolean {
+        if (!this.skills.has(skillId)) {
+            return false;
+        }
+
+        this.lastUsedAt.delete(skillId);
+
+        return true;
+    }
+
+    resetAllCooldowns(): void {
+        this.lastUsedAt.clear();
+    }
 }
