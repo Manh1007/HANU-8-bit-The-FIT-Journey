@@ -1,6 +1,9 @@
 import {
     BossSkillValidator,
 } from "./BossSkillValidator";
+import type {
+    BossSkillState,
+} from "./BossSkillState";
 
 export type BossSkillId =
     | "skill1"
@@ -134,6 +137,29 @@ export class BossSkillSystem {
             0,
             skill.cooldown - elapsed
         );
+    }
+
+    getSkillState(
+        skillId: BossSkillId,
+        currentTime: number
+    ): BossSkillState {
+        const skill =
+            this.getSkill(skillId);
+
+        if (!skill) {
+            return "unavailable";
+        }
+
+        if (
+            this.canUseSkill(
+                skillId,
+                currentTime
+            )
+        ) {
+            return "ready";
+        }
+
+        return "cooldown";
     }
 
     useSkill(

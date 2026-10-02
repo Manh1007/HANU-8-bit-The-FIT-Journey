@@ -281,4 +281,48 @@ describe("BossSkillSystem", () => {
             )
         ).toBe(4000);
     });
+
+    test("unused skill is ready", () => {
+        const system =
+            new BossSkillSystem();
+
+        expect(
+            system.getSkillState(
+                "skill1",
+                1000
+            )
+        ).toBe("ready");
+    });
+    test("skill is in cooldown after use", () => {
+        const system =
+            new BossSkillSystem();
+
+        system.useSkill(
+            "skill1",
+            1000
+        );
+
+        expect(
+            system.getSkillState(
+                "skill1",
+                2000
+            )
+        ).toBe("cooldown");
+    });
+    test("skill becomes ready after cooldown", () => {
+        const system =
+            new BossSkillSystem();
+
+        system.useSkill(
+            "skill1",
+            1000
+        );
+
+        expect(
+            system.getSkillState(
+                "skill1",
+                4000
+            )
+        ).toBe("ready");
+    });
 });
