@@ -1,8 +1,12 @@
 import {
     BossBase,
+    type BossPhase,
     type BossData,
 } from "./BossBase";
+
 import type { BossCombatData } from "./BossCombatData";
+
+import type { BossPhaseCombatData } from "./BossPhaseCombatData";
 
 const boss1Data: BossData = {
     id: "boss-1",
@@ -30,34 +34,70 @@ const boss1CombatData: BossCombatData = {
     skill2Multiplier: 3.5,
 };
 
+const boss1PhaseCombatData:
+    BossPhaseCombatData[] = [
+        {
+            phase: 1,
+            attackMultiplier: 1.0,
+            armorBonus: 0,
+            skill1Multiplier: 2.0,
+            skill2Multiplier: 3.5,
+        },
+        {
+            phase: 2,
+            attackMultiplier: 1.2,
+            armorBonus: 15,
+            skill1Multiplier: 2.5,
+            skill2Multiplier: 4.0,
+        },
+    ];
+
 export class Boss1 extends BossBase {
-    private readonly phaseTwoArmorBonus = 15;
-    private readonly combatData: BossCombatData;
+    private readonly combatData:
+        BossCombatData;
+
+    private readonly phaseCombatData:
+        BossPhaseCombatData[];
+
+    private readonly appliedPhaseBonuses:
+        Set<BossPhase> = new Set();
 
     constructor() {
         super(boss1Data);
 
-        this.combatData = boss1CombatData;
+        this.combatData =
+            boss1CombatData;
+
+        this.phaseCombatData =
+            boss1PhaseCombatData;
     }
 
     getCombatData(): BossCombatData {
         return this.combatData;
     }
 
-    override advancePhase(): boolean {
-        const advanced = super.advancePhase();
+    getPhaseCombatData():
+        BossPhaseCombatData[] {
+        return this.phaseCombatData;
+    }
 
-        if (!advanced) {
-            return false;
+    protected override onPhaseAdvanced(
+        _previousPhase: BossPhase,
+        newPhase: BossPhase
+    ): void {
+        if (this.appliedPhaseBonuses.has(newPhase)) {
+            return;
         }
 
-        if (this.getCurrentPhase() === 2) {
+        const data = this.phaseCombatData.find(
+            (p) => p.phase === newPhase
+        );
+
+        if (data && data.armorBonus > 0) {
             this.setArmor(
-                this.getArmor() +
-                this.phaseTwoArmorBonus
+                this.getArmor() + data.armorBonus
             );
+            this.appliedPhaseBonuses.add(newPhase);
         }
-
-        return true;
     }
 }

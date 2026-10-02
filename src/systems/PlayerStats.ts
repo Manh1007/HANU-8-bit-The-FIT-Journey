@@ -50,6 +50,18 @@ export class PlayerStats {
         return previousHp - this.hp;
     }
 
+    isAlive(): boolean {
+        return this.hp > 0;
+    }
+
+    isDead(): boolean {
+        return this.hp <= 0;
+    }
+
+    isFullHealth(): boolean {
+        return this.hp === this.maxHp;
+    }
+
     // =========================
     // Attack
     // =========================
@@ -97,6 +109,10 @@ export class PlayerStats {
 
     getArmor(): number {
         return this.armor;
+    }
+
+    setArmor(amount: number): void {
+        this.armor = Math.max(0, amount);
     }
 
     // =========================

@@ -1,5 +1,8 @@
 export type WeaponId =
-    | "keyboard";
+    | "keyboard"
+    | "mechanical_keyboard"
+    | "laptop"
+    | string;
 
 export interface WeaponData {
     id: WeaponId;
@@ -26,7 +29,7 @@ export class WeaponSystem {
         });
     }
 
-    private registerWeapon(weapon: WeaponData): void {
+    registerWeapon(weapon: WeaponData): void {
         this.weapons.set(weapon.id, weapon);
     }
 

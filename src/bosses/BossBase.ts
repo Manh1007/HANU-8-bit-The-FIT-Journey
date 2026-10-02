@@ -135,11 +135,26 @@ export abstract class BossBase extends Enemy {
             return false;
         }
 
+        const previousPhase = this.currentPhase;
+
         this.currentPhase = (
             this.currentPhase + 1
         ) as BossPhase;
 
+        this.onPhaseAdvanced(
+            previousPhase,
+            this.currentPhase
+        );
+
         return true;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected onPhaseAdvanced(
+        _previousPhase: BossPhase,
+        _newPhase: BossPhase
+    ): void {
+        // Subclasses can override this to apply phase-specific bonuses
     }
 
     protected markDefeated(): void {

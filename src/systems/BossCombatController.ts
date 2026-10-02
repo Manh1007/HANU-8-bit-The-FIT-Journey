@@ -1,14 +1,30 @@
 import { BossBase } from "../bosses/BossBase";
-import type { BossCombatData } from "../bosses/BossCombatData";
-import { BossCombatSystem } from "./BossCombatSystem";
+
+import type { BossCombatData }
+    from "../bosses/BossCombatData";
+
+import { BossCombatSystem }
+    from "./BossCombatSystem";
+
 import {
     BossSkillSystem,
     type BossSkillId,
 } from "./BossSkillSystem";
-import { BossSkillExecutor } from "./BossSkillExecutor";
-import { DamageSystem } from "./DamageSystem";
-import type { BossCombatResult } from "./BossCombatResult";
-import type { BossPhaseResult } from "./BossPhaseResult";
+
+import { BossSkillExecutor }
+    from "./BossSkillExecutor";
+
+import { DamageSystem }
+    from "./DamageSystem";
+
+import type { BossCombatResult }
+    from "./BossCombatResult";
+
+import type { BossPhaseResult }
+    from "./BossPhaseResult";
+
+import { BossPhaseBehavior }
+    from "./BossPhaseBehavior";
 
 export class BossCombatController {
     private readonly boss: BossBase;
@@ -30,18 +46,25 @@ export class BossCombatController {
         combatSystem: BossCombatSystem,
         skillSystem: BossSkillSystem,
         damageSystem: DamageSystem,
-        combatData: BossCombatData
+        combatData: BossCombatData,
+        phaseBehavior: BossPhaseBehavior
     ) {
         this.boss = boss;
-        this.combatSystem = combatSystem;
-        this.skillSystem = skillSystem;
-        this.damageSystem = damageSystem;
+        this.combatSystem =
+            combatSystem;
+
+        this.skillSystem =
+            skillSystem;
+
+        this.damageSystem =
+            damageSystem;
 
         this.skillExecutor =
             new BossSkillExecutor(
                 boss,
                 skillSystem,
-                combatData
+                combatData,
+                phaseBehavior
             );
     }
 
@@ -56,10 +79,14 @@ export class BossCombatController {
     }
 
     isCombatActive(): boolean {
-        return this.boss.getState() === "active";
+        return (
+            this.boss.getState() ===
+            "active"
+        );
     }
 
-    updateBossPhase(): BossPhaseResult {
+    updateBossPhase():
+        BossPhaseResult {
         const previousPhase =
             this.boss.getCurrentPhase();
 
@@ -67,7 +94,8 @@ export class BossCombatController {
             return {
                 changed: false,
                 previousPhase,
-                currentPhase: previousPhase,
+                currentPhase:
+                    previousPhase,
             };
         }
 
@@ -105,10 +133,11 @@ export class BossCombatController {
                 .calculateNormalDamage();
 
         const damageResult =
-            this.damageSystem.calculateDamage(
-                damage,
-                targetArmor
-            );
+            this.damageSystem
+                .calculateDamage(
+                    damage,
+                    targetArmor
+                );
 
         return {
             success: true,
@@ -143,11 +172,12 @@ export class BossCombatController {
         }
 
         const skillResult =
-            this.skillExecutor.executeSkill(
-                skillId,
-                currentTime,
-                randomValue
-            );
+            this.skillExecutor
+                .executeSkill(
+                    skillId,
+                    currentTime,
+                    randomValue
+                );
 
         if (!skillResult.success) {
             return {
@@ -158,10 +188,11 @@ export class BossCombatController {
         }
 
         const damageResult =
-            this.damageSystem.calculateDamage(
-                skillResult.damage,
-                targetArmor
-            );
+            this.damageSystem
+                .calculateDamage(
+                    skillResult.damage,
+                    targetArmor
+                );
 
         return {
             success: true,

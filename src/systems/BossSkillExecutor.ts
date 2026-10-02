@@ -1,24 +1,42 @@
 import { BossBase } from "../bosses/BossBase";
+
 import {
     BossSkillSystem,
     type BossSkillId,
 } from "./BossSkillSystem";
-import type { BossSkillResult } from "./BossSkillResult";
-import type { BossCombatData } from "../bosses/BossCombatData";
+
+import type { BossSkillResult }
+    from "./BossSkillResult";
+
+import type { BossCombatData }
+    from "../bosses/BossCombatData";
+
+import { BossPhaseBehavior }
+    from "./BossPhaseBehavior";
 
 export class BossSkillExecutor {
     private readonly boss: BossBase;
-    private readonly skillSystem: BossSkillSystem;
-    private readonly combatData: BossCombatData;
+
+    private readonly skillSystem:
+        BossSkillSystem;
+
+    private readonly combatData:
+        BossCombatData;
+
+    private readonly phaseBehavior:
+        BossPhaseBehavior;
 
     constructor(
         boss: BossBase,
         skillSystem: BossSkillSystem,
-        combatData: BossCombatData
+        combatData: BossCombatData,
+        phaseBehavior: BossPhaseBehavior
     ) {
         this.boss = boss;
         this.skillSystem = skillSystem;
         this.combatData = combatData;
+        this.phaseBehavior =
+            phaseBehavior;
     }
 
     executeSkill(
@@ -27,7 +45,9 @@ export class BossSkillExecutor {
         randomValue: number
     ): BossSkillResult {
         const skill =
-            this.skillSystem.getSkill(skillId);
+            this.skillSystem.getSkill(
+                skillId
+            );
 
         if (!skill) {
             return {
@@ -52,6 +72,16 @@ export class BossSkillExecutor {
             };
         }
 
+        const phase =
+            this.boss.getCurrentPhase();
+
+        const phaseMultiplier =
+            this.phaseBehavior
+                .getSkillMultiplier(
+                    phase,
+                    skillId
+                );
+
         const isCritical =
             randomValue >= 0 &&
             randomValue <
@@ -59,7 +89,7 @@ export class BossSkillExecutor {
 
         let damage =
             this.boss.getAttack() *
-            skill.damageMultiplier;
+            phaseMultiplier;
 
         if (isCritical) {
             damage *=
