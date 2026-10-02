@@ -10,18 +10,8 @@ import {
 } from "../bosses/BossBase";
 
 class TestBoss extends BossBase {
-    private phaseReady = false;
-
     constructor(data: BossData) {
         super(data);
-    }
-
-    setPhaseReady(value: boolean): void {
-        this.phaseReady = value;
-    }
-
-    protected shouldAdvancePhase(): boolean {
-        return this.phaseReady;
     }
 
     defeat(): void {
@@ -36,6 +26,20 @@ const bossData: BossData = {
     attack: 10,
     armor: 5,
     maxPhases: 3,
+    phases: [
+        {
+            phase: 1,
+            hpThreshold: 1,
+        },
+        {
+            phase: 2,
+            hpThreshold: 0.5,
+        },
+        {
+            phase: 3,
+            hpThreshold: 0.25,
+        },
+    ],
 };
 
 describe("BossBase", () => {
@@ -125,7 +129,6 @@ describe("BossBase", () => {
         const boss = new TestBoss(bossData);
 
         boss.startBattle();
-        boss.setPhaseReady(true);
 
         expect(boss.canAdvancePhase()).toBe(true);
     });
@@ -143,7 +146,10 @@ describe("BossBase", () => {
         const boss = new TestBoss(bossData);
 
         boss.startBattle();
-        boss.setPhaseReady(true);
+
+        boss.takeDamage(150);
+
+        expect(boss.getHpPercentage()).toBe(0.5);
 
         expect(boss.updatePhase()).toBe(true);
         expect(boss.getCurrentPhase()).toBe(2);
@@ -151,8 +157,6 @@ describe("BossBase", () => {
 
     test("should not advance phase before battle starts", () => {
         const boss = new TestBoss(bossData);
-
-        boss.setPhaseReady(true);
 
         expect(boss.canAdvancePhase()).toBe(false);
         expect(boss.updatePhase()).toBe(false);
@@ -164,8 +168,6 @@ describe("BossBase", () => {
 
         boss.startBattle();
         boss.takeDamage(300);
-
-        boss.setPhaseReady(true);
 
         expect(boss.isDead()).toBe(true);
         expect(boss.canAdvancePhase()).toBe(false);
@@ -207,8 +209,6 @@ describe("BossBase", () => {
         boss.startBattle();
         boss.takeDamage(300);
 
-        boss.setPhaseReady(true);
-
         expect(boss.getState()).toBe("defeated");
         expect(boss.canAdvancePhase()).toBe(false);
         expect(boss.updatePhase()).toBe(false);
@@ -239,5 +239,76 @@ describe("BossBase", () => {
         expect(actualDamage).toBe(0);
         expect(boss.getHp()).toBe(0);
         expect(boss.getState()).toBe("defeated");
+    });
+
+    test("should return phase configuration", () => {
+        const boss = new TestBoss(bossData);
+
+        const phaseTwo = boss.getPhaseConfig(2);
+
+        expect(phaseTwo).toEqual({
+            phase: 2,
+            hpThreshold: 0.5,
+        });
+    });
+
+    test("should advance phase based on HP threshold", () => {
+        const boss = new TestBoss(bossData);
+
+        boss.startBattle();
+
+        boss.takeDamage(150);
+
+        expect(boss.getHpPercentage()).toBe(0.5);
+
+        expect(boss.updatePhase()).toBe(true);
+        expect(boss.getCurrentPhase()).toBe(2);
+    });
+
+    test("should advance to phase three at threshold", () => {
+        const boss = new TestBoss(bossData);
+
+        boss.startBattle();
+
+        boss.takeDamage(150);
+
+        boss.updatePhase();
+
+        expect(boss.getCurrentPhase()).toBe(2);
+
+        boss.takeDamage(75);
+
+        expect(boss.getHpPercentage()).toBe(0.25);
+
+        expect(boss.updatePhase()).toBe(true);
+        expect(boss.getCurrentPhase()).toBe(3);
+    });
+
+    test("should reject invalid phase threshold", () => {
+        expect(() => {
+            new TestBoss({
+                ...bossData,
+                phases: [
+                    {
+                        phase: 1,
+                        hpThreshold: 1.5,
+                    },
+                ],
+            });
+        }).toThrow();
+    });
+
+    test("should reject negative phase threshold", () => {
+        expect(() => {
+            new TestBoss({
+                ...bossData,
+                phases: [
+                    {
+                        phase: 1,
+                        hpThreshold: -0.5,
+                    },
+                ],
+            });
+        }).toThrow();
     });
 });

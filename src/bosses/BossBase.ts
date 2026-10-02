@@ -7,12 +7,20 @@ export type BossState =
 
 export type BossPhase = 1 | 2 | 3;
 
+export interface BossPhaseConfig {
+    phase: BossPhase;
+    hpThreshold: number;
+}
+
 export interface BossData extends EnemyData {
     maxPhases: BossPhase;
+    phases: BossPhaseConfig[];
 }
 
 export abstract class BossBase extends Enemy {
     private readonly maxPhases: BossPhase;
+
+    private readonly phases: BossPhaseConfig[];
 
     private currentPhase: BossPhase = 1;
 
@@ -22,6 +30,27 @@ export abstract class BossBase extends Enemy {
         super(data);
 
         this.maxPhases = data.maxPhases;
+
+        for (const phase of data.phases) {
+            if (
+                phase.phase > this.maxPhases ||
+                !this.isValidThreshold(
+                    phase.hpThreshold
+                )
+            ) {
+                throw new Error(
+                    `Invalid boss phase configuration: ${phase.phase}`
+                );
+            }
+        }
+
+        this.phases = data.phases;
+    }
+
+    private isValidThreshold(
+        threshold: number
+    ): boolean {
+        return threshold >= 0 && threshold <= 1;
     }
 
     takeDamage(amount: number): number {
@@ -46,6 +75,14 @@ export abstract class BossBase extends Enemy {
         return this.state;
     }
 
+    getPhaseConfig(
+        phase: BossPhase
+    ): BossPhaseConfig | undefined {
+        return this.phases.find(
+            (config) => config.phase === phase
+        );
+    }
+
     startBattle(): void {
         if (this.isDead()) {
             return;
@@ -63,7 +100,22 @@ export abstract class BossBase extends Enemy {
     }
 
     protected shouldAdvancePhase(): boolean {
-        return false;
+        const nextPhase = (
+            this.currentPhase + 1
+        ) as BossPhase;
+
+        const config = this.getPhaseConfig(
+            nextPhase
+        );
+
+        if (!config) {
+            return false;
+        }
+
+        return (
+            this.getHpPercentage() <=
+            config.hpThreshold
+        );
     }
 
     updatePhase(): boolean {
