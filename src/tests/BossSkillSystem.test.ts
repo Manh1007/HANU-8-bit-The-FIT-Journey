@@ -293,6 +293,7 @@ describe("BossSkillSystem", () => {
             )
         ).toBe("ready");
     });
+
     test("skill is in cooldown after use", () => {
         const system =
             new BossSkillSystem();
@@ -309,6 +310,7 @@ describe("BossSkillSystem", () => {
             )
         ).toBe("cooldown");
     });
+
     test("skill becomes ready after cooldown", () => {
         const system =
             new BossSkillSystem();
@@ -411,7 +413,7 @@ describe("BossSkillSystem", () => {
             )
         ).toBe("ready");
     });
-    
+
     test("skill can be used immediately after reset", () => {
         const system =
             new BossSkillSystem();
@@ -443,5 +445,66 @@ describe("BossSkillSystem", () => {
             )
         ).toBe(true);
     });
-    
+
+    test("returns ready skill info", () => {
+        const system =
+            new BossSkillSystem();
+
+        const info =
+            system.getSkillInfo(
+                "skill1",
+                1000
+            );
+
+        expect(info).toBeDefined();
+        expect(info?.skill.id).toBe(
+            "skill1"
+        );
+        expect(info?.state).toBe("ready");
+        expect(
+            info?.remainingCooldown
+        ).toBe(0);
+        expect(info?.available).toBe(true);
+    });
+
+    test("returns cooldown skill info", () => {
+        const system =
+            new BossSkillSystem();
+
+        system.useSkill(
+            "skill1",
+            1000
+        );
+
+        const info =
+            system.getSkillInfo(
+                "skill1",
+                2000
+            );
+
+        expect(info).toBeDefined();
+        expect(info?.skill.id).toBe(
+            "skill1"
+        );
+        expect(info?.state).toBe(
+            "cooldown"
+        );
+        expect(
+            info?.remainingCooldown
+        ).toBe(2000);
+        expect(info?.available).toBe(false);
+    });
+
+    test("returns undefined for unknown skill info", () => {
+        const system =
+            new BossSkillSystem();
+
+        const info =
+            system.getSkillInfo(
+                "unknown" as "skill1",
+                1000
+            );
+
+        expect(info).toBeUndefined();
+    });
 });

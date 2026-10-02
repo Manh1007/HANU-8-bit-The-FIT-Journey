@@ -4,6 +4,9 @@ import {
 import type {
     BossSkillState,
 } from "./BossSkillState";
+import type {
+    BossSkillInfo,
+} from "./BossSkillInfo";
 
 export type BossSkillId =
     | "skill1"
@@ -160,6 +163,38 @@ export class BossSkillSystem {
         }
 
         return "cooldown";
+    }
+
+    getSkillInfo(
+        skillId: BossSkillId,
+        currentTime: number
+    ): BossSkillInfo | undefined {
+        const skill =
+            this.getSkill(skillId);
+
+        if (!skill) {
+            return undefined;
+        }
+
+        const state =
+            this.getSkillState(
+                skillId,
+                currentTime
+            );
+
+        const remainingCooldown =
+            this.getRemainingCooldown(
+                skillId,
+                currentTime
+            );
+
+        return {
+            skill,
+            state,
+            remainingCooldown,
+            available:
+                state === "ready",
+        };
     }
 
     useSkill(
