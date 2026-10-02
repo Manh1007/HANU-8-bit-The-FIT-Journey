@@ -9,180 +9,172 @@ import {
 } from "../systems/BossSkillSystem";
 
 describe("BossSkillSystem", () => {
-    test("should register skill 1", () => {
-        const skillSystem =
+    test("skill 1 has correct definition", () => {
+        const system =
             new BossSkillSystem();
 
         const skill =
-            skillSystem.getSkill("skill1");
+            system.getSkill("skill1");
 
         expect(skill).toBeDefined();
-
-        expect(skill?.id).toBe(
-            "skill1"
-        );
-
-        expect(skill?.damageMultiplier).toBe(
-            2.0
-        );
+        expect(skill?.id).toBe("skill1");
+        expect(skill?.name).toBe("Skill 1");
+        expect(
+            skill?.damageMultiplier
+        ).toBe(2.0);
+        expect(
+            skill?.cooldown
+        ).toBe(3000);
     });
 
-    test("should register skill 2", () => {
-        const skillSystem =
+    test("skill 2 has correct definition", () => {
+        const system =
             new BossSkillSystem();
 
         const skill =
-            skillSystem.getSkill("skill2");
+            system.getSkill("skill2");
 
         expect(skill).toBeDefined();
-
-        expect(skill?.id).toBe(
-            "skill2"
-        );
-
-        expect(skill?.damageMultiplier).toBe(
-            3.5
-        );
+        expect(skill?.id).toBe("skill2");
+        expect(skill?.name).toBe("Skill 2");
+        expect(
+            skill?.damageMultiplier
+        ).toBe(3.5);
+        expect(
+            skill?.cooldown
+        ).toBe(5000);
     });
 
-    test("should confirm registered skills", () => {
-        const skillSystem =
+    test("registered skills are available", () => {
+        const system =
             new BossSkillSystem();
 
         expect(
-            skillSystem.hasSkill("skill1")
+            system.hasSkill("skill1")
         ).toBe(true);
 
         expect(
-            skillSystem.hasSkill("skill2")
+            system.hasSkill("skill2")
         ).toBe(true);
     });
 
-    test("should correctly report skill availability", () => {
-        const skillSystem =
+    test("unregistered skill is unavailable", () => {
+        const system =
             new BossSkillSystem();
 
         expect(
-            skillSystem.hasSkill("skill1")
+            system.hasSkill("skill1")
         ).toBe(true);
 
         expect(
-            skillSystem.hasSkill("skill2")
+            system.hasSkill("skill2")
         ).toBe(true);
     });
 
-    test("should have correct cooldown for skill 1", () => {
-        const skillSystem =
-            new BossSkillSystem();
-
-        const skill =
-            skillSystem.getSkill("skill1");
-
-        expect(skill?.cooldown).toBe(3000);
-    });
-
-    test("should have correct cooldown for skill 2", () => {
-        const skillSystem =
-            new BossSkillSystem();
-
-        const skill =
-            skillSystem.getSkill("skill2");
-
-        expect(skill?.cooldown).toBe(5000);
-    });
-
-    test("should allow skill to be used initially", () => {
-        const skillSystem =
+    test("skill 1 is initially available", () => {
+        const system =
             new BossSkillSystem();
 
         expect(
-            skillSystem.canUseSkill(
+            system.canUseSkill(
                 "skill1",
                 1000
             )
         ).toBe(true);
     });
 
-    test("should block skill during cooldown", () => {
-        const skillSystem =
+    test("skill 1 is unavailable during cooldown", () => {
+        const system =
             new BossSkillSystem();
 
         expect(
-            skillSystem.useSkill(
+            system.useSkill(
                 "skill1",
                 1000
             )
         ).toBe(true);
 
         expect(
-            skillSystem.canUseSkill(
+            system.canUseSkill(
                 "skill1",
                 2000
             )
         ).toBe(false);
     });
 
-    test("should allow skill after cooldown", () => {
-        const skillSystem =
+    test("skill 1 becomes available after cooldown", () => {
+        const system =
             new BossSkillSystem();
 
         expect(
-            skillSystem.useSkill(
+            system.useSkill(
                 "skill1",
                 1000
             )
         ).toBe(true);
 
         expect(
-            skillSystem.canUseSkill(
+            system.canUseSkill(
                 "skill1",
                 4000
             )
         ).toBe(true);
     });
 
-    test("should keep cooldowns independent", () => {
-        const skillSystem =
+    test("skill 2 has independent cooldown", () => {
+        const system =
             new BossSkillSystem();
 
         expect(
-            skillSystem.useSkill(
+            system.useSkill(
                 "skill1",
                 1000
             )
         ).toBe(true);
 
         expect(
-            skillSystem.canUseSkill(
-                "skill1",
-                2000
-            )
-        ).toBe(false);
-
-        expect(
-            skillSystem.canUseSkill(
+            system.canUseSkill(
                 "skill2",
-                2000
+                1000
             )
         ).toBe(true);
     });
 
-    test("should reject using a skill during its cooldown", () => {
-        const skillSystem =
+    test("skill cannot be used twice during cooldown", () => {
+        const system =
             new BossSkillSystem();
 
         expect(
-            skillSystem.useSkill(
+            system.useSkill(
                 "skill1",
                 1000
             )
         ).toBe(true);
 
         expect(
-            skillSystem.useSkill(
+            system.useSkill(
                 "skill1",
                 2000
             )
         ).toBe(false);
+    });
+
+    test("skill can be used again after cooldown", () => {
+        const system =
+            new BossSkillSystem();
+
+        expect(
+            system.useSkill(
+                "skill1",
+                1000
+            )
+        ).toBe(true);
+
+        expect(
+            system.useSkill(
+                "skill1",
+                4000
+            )
+        ).toBe(true);
     });
 });

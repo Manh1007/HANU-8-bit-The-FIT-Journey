@@ -1,3 +1,7 @@
+import {
+    BossSkillValidator,
+} from "./BossSkillValidator";
+
 export type BossSkillId =
     | "skill1"
     | "skill2";
@@ -20,9 +24,14 @@ export class BossSkillSystem {
         number
     >;
 
+    private readonly validator:
+        BossSkillValidator;
+
     constructor() {
         this.skills = new Map();
         this.lastUsedAt = new Map();
+        this.validator =
+            new BossSkillValidator();
 
         this.registerSkill({
             id: "skill1",
@@ -42,6 +51,22 @@ export class BossSkillSystem {
     private registerSkill(
         skill: BossSkillData
     ): void {
+        if (
+            !this.validator.validate(skill)
+        ) {
+            throw new Error(
+                `Invalid boss skill configuration: ${skill.id}`
+            );
+        }
+
+        if (
+            this.skills.has(skill.id)
+        ) {
+            throw new Error(
+                `Boss skill already registered: ${skill.id}`
+            );
+        }
+
         this.skills.set(
             skill.id,
             skill
@@ -64,7 +89,8 @@ export class BossSkillSystem {
         skillId: BossSkillId,
         currentTime: number
     ): boolean {
-        const skill = this.getSkill(skillId);
+        const skill =
+            this.getSkill(skillId);
 
         if (!skill) {
             return false;
