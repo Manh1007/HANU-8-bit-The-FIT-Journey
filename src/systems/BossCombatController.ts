@@ -44,9 +44,44 @@ export class BossCombatController {
             );
     }
 
+    startCombat(): boolean {
+        if (this.boss.isDead()) {
+            return false;
+        }
+
+        this.boss.startBattle();
+
+        return this.isCombatActive();
+    }
+
+    isCombatActive(): boolean {
+        return this.boss.getState() === "active";
+    }
+
+    updateBossPhase(): boolean {
+        if (!this.isCombatActive()) {
+            return false;
+        }
+
+        return this.boss.updatePhase();
+    }
+
     executeNormalAttack(
         targetArmor: number
     ): BossCombatResult {
+        if (!this.isCombatActive()) {
+            return {
+                success: false,
+                skillResult: {
+                    success: false,
+                    skillId: "normal",
+                    damage: 0,
+                    critical: false,
+                },
+                finalDamage: 0,
+            };
+        }
+
         const damage =
             this.combatSystem
                 .calculateNormalDamage();
@@ -76,6 +111,19 @@ export class BossCombatController {
         randomValue: number,
         targetArmor: number
     ): BossCombatResult {
+        if (!this.isCombatActive()) {
+            return {
+                success: false,
+                skillResult: {
+                    success: false,
+                    skillId,
+                    damage: 0,
+                    critical: false,
+                },
+                finalDamage: 0,
+            };
+        }
+
         const skillResult =
             this.skillExecutor.executeSkill(
                 skillId,
@@ -114,6 +162,10 @@ export class BossCombatController {
         skillId: BossSkillId,
         currentTime: number
     ): boolean {
+        if (!this.isCombatActive()) {
+            return false;
+        }
+
         return this.skillSystem
             .canUseSkill(
                 skillId,
