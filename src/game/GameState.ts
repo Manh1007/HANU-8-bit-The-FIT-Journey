@@ -1,3 +1,15 @@
+/**
+ * UNIFIED GAME STATE BRIDGE
+ *
+ * Resolves architectural duality:
+ * Delegates all state operations to the canonical GameState singleton
+ * in `src/systems/GameState.ts`.
+ */
+
+import { GameState } from "../systems/GameState";
+
+export { GameState } from "../systems/GameState";
+
 export interface PlayerState {
     name: string;
     year: number;
@@ -21,71 +33,58 @@ export interface GameStateData {
     memories: string[];
 }
 
-export class GameState {
-    private data: GameStateData;
-
-    constructor() {
-        this.data = {
-            player: {
-                name: "Student",
-                year: 1,
-                semester: 1,
-                xp: 0,
-            },
-
-            quests: {
-                active: [],
-                completed: [],
-            },
-
-            world: {
-                unlockedLocations: ["campus"],
-            },
-
-            memories: [],
-        };
-    }
+/**
+ * Backward compatibility adapter for legacy code importing `gameState`.
+ * Proxies calls directly to `GameState.getInstance()`.
+ */
+export const gameState = {
+    get instance(): GameState {
+        return GameState.getInstance();
+    },
 
     getData(): GameStateData {
-        return this.data;
-    }
+        const gs = GameState.getInstance();
+        return {
+            player: {
+                name: (gs.getFlag("player_name") as string) || "Student",
+                year: (gs.getFlag("player_year") as number) || 1,
+                semester: (gs.getFlag("player_semester") as number) || 1,
+                xp: (gs.getFlag("player_xp") as number) || 0,
+            },
+            quests: {
+                active: gs.questManager.getActiveQuests().map((q) => q.getId()),
+                completed: gs.questManager.getCompletedQuests().map((q) => q.getId()),
+            },
+            world: {
+                unlockedLocations: gs.worldManager.getUnlockedLocations().map((l) => l.id),
+            },
+            memories: gs.memoryManager.getCollected().map((m) => m.id),
+        };
+    },
 
     addXP(amount: number): void {
-        this.data.player.xp += amount;
-    }
+        const gs = GameState.getInstance();
+        const currentXP = Number(gs.getFlag("player_xp") ?? 0);
+        gs.setFlag("player_xp", currentXP + amount);
+    },
 
     startQuest(questId: string): void {
-        if (!this.data.quests.active.includes(questId)) {
-            this.data.quests.active.push(questId);
-        }
-    }
+        GameState.getInstance().questManager.startQuest(questId);
+    },
 
     completeQuest(questId: string): void {
-        this.data.quests.active =
-            this.data.quests.active.filter(
-                (id) => id !== questId
-            );
-
-        if (!this.data.quests.completed.includes(questId)) {
-            this.data.quests.completed.push(questId);
-        }
-    }
+        GameState.getInstance().questManager.completeQuest(questId);
+    },
 
     unlockLocation(locationId: string): void {
-        if (!this.data.world.unlockedLocations.includes(locationId)) {
-            this.data.world.unlockedLocations.push(locationId);
-        }
-    }
+        GameState.getInstance().worldManager.unlockLocation(locationId);
+    },
 
     isLocationUnlocked(locationId: string): boolean {
-        return this.data.world.unlockedLocations.includes(locationId);
-    }
+        return GameState.getInstance().worldManager.isUnlocked(locationId);
+    },
 
     addMemory(memoryId: string): void {
-        if (!this.data.memories.includes(memoryId)) {
-            this.data.memories.push(memoryId);
-        }
-    }
-}
-
-export const gameState = new GameState();
+        GameState.getInstance().memoryManager.collect(memoryId);
+    },
+};

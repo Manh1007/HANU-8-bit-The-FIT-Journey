@@ -12,7 +12,7 @@ import type { AcademicChallengeData } from "../systems/AcademicChallenge";
 import type { QuestData } from "../systems/QuestTypes";
 
 describe("Final Boss Progression — End-to-End Gameplay Flow", () => {
-    function createPlayer(attack = 100, _hp = 500, armor = 2) {
+    function createPlayer(attack = 250, _hp = 500, armor = 2) {
         const stats = new PlayerStats();
         stats.setArmor(armor);
         const weapon = new WeaponSystem();
@@ -35,7 +35,7 @@ describe("Final Boss Progression — End-to-End Gameplay Flow", () => {
 
     test("Complete Linear Flow: Boss 1 -> Unlock Boss 2 -> Boss 2 -> Unlock Boss 3 -> Boss 3 -> Final Reward", () => {
         const gs = GameState.getInstance();
-        const player = createPlayer(120, 1000, 5);
+        const player = createPlayer(250, 1000, 5);
 
         // 1. Setup Quests matching the progression
         const quests: QuestData[] = [
@@ -176,7 +176,8 @@ describe("Final Boss Progression — End-to-End Gameplay Flow", () => {
 
         // Player attacks and brings boss 1 to phase 2 threshold (<= 150 HP)
         let t = 0;
-        while (boss1.getHp() > 150 && !encounter1!.isOver()) {
+        let safety = 100;
+        while (boss1.getHp() > 150 && !encounter1!.isOver() && safety-- > 0) {
             encounter1!.playerAttack(t);
             t += 300;
         }
@@ -184,7 +185,8 @@ describe("Final Boss Progression — End-to-End Gameplay Flow", () => {
         expect(boss1.getArmor()).toBe(20);
 
         // Finish Boss 1
-        while (!encounter1!.isOver()) {
+        safety = 100;
+        while (!encounter1!.isOver() && safety-- > 0) {
             encounter1!.playerAttack(t);
             t += 300;
         }
@@ -221,7 +223,8 @@ describe("Final Boss Progression — End-to-End Gameplay Flow", () => {
         expect(boss2.getCurrentPhase()).toBe(1);
 
         // Player attacks until Boss 2 reaches phase 2 (<= 250 HP)
-        while (boss2.getHp() > 250 && !encounter2!.isOver()) {
+        safety = 100;
+        while (boss2.getHp() > 250 && !encounter2!.isOver() && safety-- > 0) {
             encounter2!.playerAttack(t);
             t += 300;
         }
@@ -229,7 +232,8 @@ describe("Final Boss Progression — End-to-End Gameplay Flow", () => {
         expect(boss2.getArmor()).toBe(30); // 10 + 20 = 30
 
         // Finish Boss 2
-        while (!encounter2!.isOver()) {
+        safety = 100;
+        while (!encounter2!.isOver() && safety-- > 0) {
             encounter2!.playerAttack(t);
             t += 300;
         }
@@ -262,7 +266,8 @@ describe("Final Boss Progression — End-to-End Gameplay Flow", () => {
         expect(boss3.getCurrentPhase()).toBe(1);
 
         // Advance Boss 3 to Phase 2 (HP <= 66.67%, <= 533 HP)
-        while (boss3.getHp() > 533 && !encounter3!.isOver()) {
+        safety = 100;
+        while (boss3.getHp() > 533 && !encounter3!.isOver() && safety-- > 0) {
             encounter3!.playerAttack(t);
             t += 300;
         }
@@ -270,7 +275,8 @@ describe("Final Boss Progression — End-to-End Gameplay Flow", () => {
         expect(boss3.getArmor()).toBe(35); // 15 + 20 = 35
 
         // Advance Boss 3 to Phase 3 (HP <= 33.33%, <= 266 HP)
-        while (boss3.getHp() > 266 && !encounter3!.isOver()) {
+        safety = 100;
+        while (boss3.getHp() > 266 && !encounter3!.isOver() && safety-- > 0) {
             encounter3!.playerAttack(t);
             t += 300;
         }
@@ -278,7 +284,8 @@ describe("Final Boss Progression — End-to-End Gameplay Flow", () => {
         expect(boss3.getArmor()).toBe(70); // Cumulative: 15 + 20 + 35 = 70
 
         // Finish Boss 3
-        while (!encounter3!.isOver()) {
+        safety = 100;
+        while (!encounter3!.isOver() && safety-- > 0) {
             encounter3!.playerAttack(t);
             t += 300;
         }

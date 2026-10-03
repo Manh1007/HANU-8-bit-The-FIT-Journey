@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { gameState } from "../game/GameState";
+import { GameState } from "../systems/GameState";
 
 export class MainMenuScene extends Phaser.Scene {
     constructor() {
@@ -51,7 +51,7 @@ export class MainMenuScene extends Phaser.Scene {
         });
 
         startButton.on("pointerdown", () => {
-            gameState.unlockLocation("nha-c");
+            GameState.getInstance().worldManager.unlockLocation("nha-c");
             this.scene.start("CampusScene");
         });
     }

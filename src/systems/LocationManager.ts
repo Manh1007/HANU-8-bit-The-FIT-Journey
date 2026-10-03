@@ -1,5 +1,5 @@
-import { gameState } from "../game/GameState";
-import {LOCATIONS, type LocationDefinition,} from "../game/Location";
+import { GameState } from "./GameState";
+import { LOCATIONS, type LocationDefinition } from "../game/Location";
 
 export class LocationManager {
     getLocation(locationId: string): LocationDefinition | undefined {
@@ -9,7 +9,7 @@ export class LocationManager {
     }
 
     isUnlocked(locationId: string): boolean {
-        return gameState.isLocationUnlocked(locationId);
+        return GameState.getInstance().worldManager.isUnlocked(locationId);
     }
 
     unlock(locationId: string): void {
@@ -22,7 +22,7 @@ export class LocationManager {
             return;
         }
 
-        gameState.unlockLocation(locationId);
+        GameState.getInstance().worldManager.unlockLocation(locationId);
     }
 
     getUnlockedLocations(): LocationDefinition[] {
