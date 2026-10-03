@@ -33,28 +33,35 @@ export class BossSkillSystem {
     private readonly validator:
         BossSkillValidator;
 
-    constructor() {
+    constructor(initialSkills?: BossSkillData[]) {
         this.skills = new Map();
         this.lastUsedAt = new Map();
         this.validator =
             new BossSkillValidator();
 
-        this.registerSkill({
-            id: "skill1",
-            name: "Skill 1",
-            damageMultiplier: 2.0,
-            cooldown: 3000,
-        });
+        const defaultSkills: BossSkillData[] = [
+            {
+                id: "skill1",
+                name: "Skill 1",
+                damageMultiplier: 2.0,
+                cooldown: 3000,
+            },
+            {
+                id: "skill2",
+                name: "Skill 2",
+                damageMultiplier: 3.5,
+                cooldown: 5000,
+            },
+        ];
 
-        this.registerSkill({
-            id: "skill2",
-            name: "Skill 2",
-            damageMultiplier: 3.5,
-            cooldown: 5000,
-        });
+        const skillsToRegister = initialSkills ?? defaultSkills;
+
+        for (const skill of skillsToRegister) {
+            this.registerSkill(skill);
+        }
     }
 
-    private registerSkill(
+    registerSkill(
         skill: BossSkillData
     ): void {
         if (

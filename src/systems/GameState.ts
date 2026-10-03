@@ -7,6 +7,8 @@ import { DialogueManager } from "./DialogueManager";
 import { MinigameRunner } from "./MinigameSystem";
 import { SaveManager } from "./SaveManager";
 import { AcademicChallengeManager, type AcademicChallengeData } from "./AcademicChallenge";
+import { BossProgressionManager } from "./BossProgression";
+import type { BossId } from "../bosses/BossRegistry";
 import type { ItemData } from "./InventoryManager";
 import type { DialogueCondition } from "./DialogueTypes";
 import type { QuestObjective, QuestReward } from "./QuestTypes";
@@ -38,6 +40,7 @@ export class GameState {
     readonly minigameRunner: MinigameRunner;
     readonly saveManager: SaveManager;
     readonly challengeManager: AcademicChallengeManager;
+    readonly bossProgression: BossProgressionManager;
 
     // ---- Runtime Flags ----
     private flags: Map<string, boolean | number | string> = new Map();
@@ -51,6 +54,7 @@ export class GameState {
         this.saveManager = new SaveManager();
         this.minigameRunner = new MinigameRunner();
         this.challengeManager = new AcademicChallengeManager();
+        this.bossProgression = new BossProgressionManager();
 
         // Build dialogue condition evaluator that queries other systems
         this.dialogueManager = new DialogueManager(
@@ -113,6 +117,13 @@ export class GameState {
      */
     onGameEvent(type: QuestObjective["type"], targetId: string, amount = 1): void {
         this.questManager.onEvent(type, targetId, amount);
+
+        if (type === "defeat_enemy" && (targetId === "boss-1" || targetId === "boss-2" || targetId === "boss-3")) {
+            const bossId = targetId as BossId;
+            if (!this.bossProgression.isBossDefeated(bossId) && this.bossProgression.canEncounterBoss(bossId)) {
+                this.bossProgression.recordBossDefeat(bossId);
+            }
+        }
     }
 
     // ============================================================
@@ -220,6 +231,7 @@ export class GameState {
             locations: this.worldManager.serialize(),
             flags: Object.fromEntries(this.flags),
             challenges: this.challengeManager.serialize(),
+            bossProgression: this.bossProgression.serialize(),
         });
     }
 
@@ -238,6 +250,10 @@ export class GameState {
 
         if (data.challenges) {
             this.challengeManager.deserialize(data.challenges);
+        }
+
+        if (data.bossProgression) {
+            this.bossProgression.deserialize(data.bossProgression);
         }
 
         return true;

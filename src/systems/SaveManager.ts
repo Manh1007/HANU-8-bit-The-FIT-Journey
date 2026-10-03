@@ -1,5 +1,6 @@
 import type { QuestStatus } from "./QuestTypes";
 import type { LocationStatus } from "./WorldManager";
+import type { BossProgressionState } from "./BossProgression";
 
 // ============================================================
 // Save Data Schema (Phase A18)
@@ -25,6 +26,7 @@ export interface SaveData {
     locations: Record<string, LocationStatus>;
     flags: Record<string, boolean | number | string>;
     challenges?: { completed: string[] };
+    bossProgression?: BossProgressionState;
 }
 
 const SAVE_KEY = "fit_hanu_save";

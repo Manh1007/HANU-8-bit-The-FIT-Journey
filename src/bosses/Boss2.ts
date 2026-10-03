@@ -10,17 +10,17 @@ import type { BossPhaseCombatData } from "./BossPhaseCombatData";
 
 import type { BossSkillData } from "../systems/BossSkillSystem";
 
-const boss1Data: BossData = {
-    id: "boss-1",
-    name: "Boss 1",
-    maxHp: 300,
-    attack: 10,
-    armor: 5,
+const boss2Data: BossData = {
+    id: "boss-2",
+    name: "Boss 2",
+    maxHp: 500,
+    attack: 16,
+    armor: 10,
     maxPhases: 2,
     phases: [
         {
             phase: 1,
-            hpThreshold: 1,
+            hpThreshold: 1.0,
         },
         {
             phase: 2,
@@ -29,57 +29,50 @@ const boss1Data: BossData = {
     ],
 };
 
-const boss1CombatData: BossCombatData = {
-    criticalChance: 0.4,
-    criticalDamageMultiplier: 1.7,
+const boss2CombatData: BossCombatData = {
+    criticalChance: 0.35,
+    criticalDamageMultiplier: 1.8,
     skill1Multiplier: 2.0,
     skill2Multiplier: 3.5,
 };
 
-const boss1PhaseCombatData:
-    BossPhaseCombatData[] = [
-        {
-            phase: 1,
-            attackMultiplier: 1.0,
-            armorBonus: 0,
-            skill1Multiplier: 2.0,
-            skill2Multiplier: 3.5,
-        },
-        {
-            phase: 2,
-            attackMultiplier: 1.2,
-            armorBonus: 15,
-            skill1Multiplier: 2.5,
-            skill2Multiplier: 4.0,
-        },
-    ];
+const boss2PhaseCombatData: BossPhaseCombatData[] = [
+    {
+        phase: 1,
+        attackMultiplier: 1.0,
+        armorBonus: 0,
+        skill1Multiplier: 2.0,
+        skill2Multiplier: 3.5,
+    },
+    {
+        phase: 2,
+        attackMultiplier: 1.3,
+        armorBonus: 20,
+        skill1Multiplier: 2.8,
+        skill2Multiplier: 4.5,
+    },
+];
 
-export class Boss1 extends BossBase {
-    private readonly combatData:
-        BossCombatData;
+export class Boss2 extends BossBase {
+    private readonly combatData: BossCombatData;
 
-    private readonly phaseCombatData:
-        BossPhaseCombatData[];
+    private readonly phaseCombatData: BossPhaseCombatData[];
 
-    private readonly appliedPhaseBonuses:
-        Set<BossPhase> = new Set();
+    private readonly appliedPhaseBonuses: Set<BossPhase> = new Set();
 
     constructor() {
-        super(boss1Data);
+        super(boss2Data);
 
-        this.combatData =
-            boss1CombatData;
+        this.combatData = boss2CombatData;
 
-        this.phaseCombatData =
-            boss1PhaseCombatData;
+        this.phaseCombatData = boss2PhaseCombatData;
     }
 
     getCombatData(): BossCombatData {
         return this.combatData;
     }
 
-    getPhaseCombatData():
-        BossPhaseCombatData[] {
+    getPhaseCombatData(): BossPhaseCombatData[] {
         return this.phaseCombatData;
     }
 
